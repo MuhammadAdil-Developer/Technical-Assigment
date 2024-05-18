@@ -11,7 +11,7 @@ import uuid
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
+# # Create your models here.
 
 
 class BaseModel(models.Model):
@@ -60,22 +60,21 @@ class UserToken(BaseModel):
 
 
 class Project(BaseModel):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    contributor_users = models.ManyToManyField(User, related_name='projects')
-    is_deleted = models.BooleanField(default=False)
+    contributor_users = models.ManyToManyField(User, related_name='projects',null=True, blank=True)  # Allow blank
 
     def __str__(self):
         return self.name
 
 class Task(BaseModel):
-    project = models.ForeignKey(Project, related_name='tasks', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='tasks', on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    status = models.CharField(max_length=50)
-    due_date = models.DateField()
-    is_deleted = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, blank=True, null=True)
+    due_date = models.DateField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.title
